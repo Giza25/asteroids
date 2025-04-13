@@ -1,12 +1,18 @@
 import pygame
 from constants import *
+from player import Player
 
-def game_loop(screen: pygame.Surface, clock: pygame.time.Clock, delta: int):
+def game_loop(
+        screen: pygame.Surface, 
+        clock: pygame.time.Clock, 
+        delta: int, 
+        player: Player):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
         screen.fill("black")
+        player.draw(screen)
         pygame.display.flip()
         delta = clock.tick(60) / 1000
 
@@ -23,7 +29,9 @@ Screen height: {SCREEN_HEIGHT}
     dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    game_loop(screen, clock, dt)
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
+    game_loop(screen, clock, dt, player)
 
 if __name__ == "__main__":
     main()

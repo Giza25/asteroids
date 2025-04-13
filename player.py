@@ -33,7 +33,6 @@ class Player(CircleShape):
         self.__clock += dt
         ready_to_shoot = False
         if self.__clock > PLAYER_SHOOT_DELAY:
-            self.__clock = 0
             ready_to_shoot = True
 
         if keys[pygame.K_a]:
@@ -45,6 +44,7 @@ class Player(CircleShape):
         if keys[pygame.K_s]:
             self.move(-dt)
         if keys[pygame.K_SPACE] and ready_to_shoot:
+            self.__clock = 0
             self.shoot()
 
     def draw(self, screen: pygame.Surface):

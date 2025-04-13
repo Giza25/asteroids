@@ -8,8 +8,10 @@ def game_loop(
         screen: pygame.Surface, 
         clock: pygame.time.Clock, 
         delta: int,
+        player: Player,
         updatable: pygame.sprite.Group,
-        drawable: pygame.sprite.Group):
+        drawable: pygame.sprite.Group,
+        asteroids: pygame.sprite.Group):
     running = True
     while running:
         for event in pygame.event.get():
@@ -23,6 +25,10 @@ def game_loop(
 
         for object in updatable:
             object.update(delta)
+        for asteroid in asteroids:
+            if asteroid.collision_check(player):
+                print("Game over!")
+                running = False
         for object in drawable:
             object.draw(screen)
         
@@ -53,7 +59,7 @@ Screen height: {SCREEN_HEIGHT}
     asteroid_field = AsteroidField()
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
-    game_loop(screen, clock, dt, updatable, drawable)
+    game_loop(screen, clock, dt, player, updatable, drawable, asteroids)
 
     pygame.quit()
 

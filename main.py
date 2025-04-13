@@ -35,7 +35,7 @@ def game_loop(
             for shot in shots:
                 if asteroid.collision_check(shot):
                     shot.kill()
-                    asteroid.kill()
+                    asteroid.split()
 
         for object in drawable:
             object.draw(screen)

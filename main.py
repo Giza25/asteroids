@@ -34,7 +34,7 @@ def game_loop(
             object.draw(screen)
         
         pygame.display.flip()
-        delta = clock.tick(60) / 1000
+        delta = clock.tick(SCREEN_FPS) / 1000
 
 def main():
     pygame.init()

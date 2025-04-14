@@ -10,10 +10,23 @@ def game_loop(
         clock: pygame.time.Clock, 
         delta: int,
         player: Player,
+        points_font: pygame.font.Font,
         updatable: pygame.sprite.Group,
         drawable: pygame.sprite.Group,
         asteroids: pygame.sprite.Group,
         shots: pygame.sprite.Group):
+    """
+    This function serves the role of the game loop as name suggests.
+    It takes these parameters:
+        screen: pygame Surface class, we are drawing on it
+        clock: an in game clock for fps limiting
+        delta: an integer working with clock
+        player: an object referencing the player
+        font: A font style used for scoring system
+        updatable, drawable, asterouds, shots: pygame Groups that allows us to
+            expand the game with more potential objects
+    """
+    points = 0 # amount of points a player have
     running = True
     while running:
         for event in pygame.event.get():
@@ -25,10 +38,15 @@ def game_loop(
         
         screen.fill("black")
 
-        for object in updatable:
+        for object in updatable: # update all the objects on the screen
             object.update(delta)
 
-        for asteroid in asteroids:
+            """
+            Checks asteroids behaviour: 
+            they should collide with the player resulting in a loss 
+            and be splitted as they are being shot
+            """
+        for asteroid in asteroids: 
             if asteroid.collision_check(player):
                 print("Game over!")
                 running = False
@@ -36,40 +54,53 @@ def game_loop(
                 if asteroid.collision_check(shot):
                     shot.kill()
                     asteroid.split()
+                    points += 1
 
-        for object in drawable:
+        for object in drawable: # draws all the objects
             object.draw(screen)
-        
+        points_surface = points_font.render(f"Score: {points}", True, "white", "black")
+
+        screen.blit(points_surface, (10, 10))
         pygame.display.flip()
         delta = clock.tick(SCREEN_FPS) / 1000
 
 def main():
     pygame.init()
-
-    print(f'''
-Starting Asteroids!
-Screen width: {SCREEN_WIDTH}
-Screen height: {SCREEN_HEIGHT}
-''')
     
+    """
+    Assigns a name of the containers 
+    """
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
 
+    """
+    Creating objects used in the game
+    """
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
+    font = pygame.font.Font(None, 50)
+    
+    """
+    Assigns containers to classes
+    """
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
 
-    asteroid_field = AsteroidField()
+    """
+    Creating Asteroid Field and a Player
+    """
+    AsteroidField() # Calling this class' constructor to create asteroids
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
-    game_loop(screen, clock, dt, player, updatable, drawable, asteroids, shots)
+    """
+    Calling game loop where the game happens
+    """
+    game_loop(screen, clock, dt, player, font, updatable, drawable, asteroids, shots)
 
     pygame.quit()
 

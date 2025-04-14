@@ -48,7 +48,7 @@ def game_loop(
             """
         for asteroid in asteroids: 
             if asteroid.collision_check(player):
-                print("Game over!")
+                game_over(screen)
                 running = False
             for shot in shots:
                 if asteroid.collision_check(shot):
@@ -63,6 +63,22 @@ def game_loop(
         screen.blit(points_surface, (10, 10))
         pygame.display.flip()
         delta = clock.tick(SCREEN_FPS) / 1000
+
+def game_over(screen: pygame.Surface):
+    game_over_font = pygame.font.Font(None, 120)
+    game_over_surface = game_over_font.render("Game Over!", True, "red", "black")
+    game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    screen.blit(game_over_surface, game_over_rect)
+    pygame.display.flip()
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
 
 def main():
     pygame.init()

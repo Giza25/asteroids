@@ -68,23 +68,41 @@ def game_loop(
         delta = clock.tick(SCREEN_FPS) / 1000
 
 def game_over(screen: pygame.Surface, score: pygame.font.Font, points: int):
+    """
+    Create a Game Over message
+    """
     game_over_font = pygame.font.Font(None, 120)
     game_over_surface = game_over_font.render("Game Over!", True, "red", "black")
     game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 30))
     
+    """
+    Create a Final Score message
+    """
     score_screen = score.render(f"Final Score: {points}", True, "white", "black")
     score_rect = score_screen.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))   
 
+    """
+    Create a tip message at the bottom of the screen with potential actions for the user
+    """
     tip_font = pygame.font.Font(None, 25)
     tip_screen = tip_font.render("Press Esc to exit. Press R to restart", True, "white", "black")
     tip_rect = tip_screen.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30))
 
+    """
+    This bit fill the screen with black colour, then displays every text message
+    """
     screen.fill("black")
     screen.blit(game_over_surface, game_over_rect)
     screen.blit(score_screen, score_rect)
     screen.blit(tip_screen, tip_rect)
     pygame.display.flip()
     
+    """
+    This loop waits for user's action:
+    - Quit by pressing X on the window
+    - Quit by pressing Esc key
+    - Restart the game by pressing R
+    """
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

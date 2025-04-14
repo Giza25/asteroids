@@ -48,7 +48,7 @@ def game_loop(
             """
         for asteroid in asteroids: 
             if asteroid.collision_check(player):
-                running = game_over(screen)
+                running = game_over(screen, points_font, points)
                 drawable.empty()
                 asteroids.empty()
                 points = 0
@@ -67,13 +67,22 @@ def game_loop(
         pygame.display.flip()
         delta = clock.tick(SCREEN_FPS) / 1000
 
-def game_over(screen: pygame.Surface):
+def game_over(screen: pygame.Surface, score: pygame.font.Font, points: int):
     game_over_font = pygame.font.Font(None, 120)
     game_over_surface = game_over_font.render("Game Over!", True, "red", "black")
-    game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    game_over_rect = game_over_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 30))
     
+    score_screen = score.render(f"Final Score: {points}", True, "white", "black")
+    score_rect = score_screen.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))   
+
+    tip_font = pygame.font.Font(None, 25)
+    tip_screen = tip_font.render("Press Esc to exit. Press R to restart", True, "white", "black")
+    tip_rect = tip_screen.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30))
+
     screen.fill("black")
     screen.blit(game_over_surface, game_over_rect)
+    screen.blit(score_screen, score_rect)
+    screen.blit(tip_screen, tip_rect)
     pygame.display.flip()
     
     while True:

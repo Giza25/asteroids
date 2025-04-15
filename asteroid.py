@@ -6,9 +6,12 @@ from player import Player
 from constants import ASTEROID_MIN_RADIUS, ASTEROID_KINDS
 
 class Asteroid(CircleShape):
-    def __init__(self, x, y, radius):
-        super().__init__(x, y, radius)
+    __asteroid_image = pygame.image.load("resources/Asteroid.png")
 
+    def __init__(self, x, y, radius, kind):
+        super().__init__(x, y, radius)
+        self.__kind = kind
+        
     def split(self):
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
@@ -20,7 +23,7 @@ class Asteroid(CircleShape):
     def __create_asteroid(self, angle):
         vector = self.velocity.rotate(angle)
         new_radius = self.radius - ASTEROID_MIN_RADIUS
-        ast = Asteroid(self.position.x, self.position.y, new_radius)
+        ast = Asteroid(self.position.x, self.position.y, new_radius, self.__kind - 1)
         ast.velocity = vector * 1.2
 
     """
@@ -68,8 +71,17 @@ class Asteroid(CircleShape):
             return True
         return False
 
+    """
+    This method draws asteroids and makes them appear as a png image stored in /resources
+    """
     def draw(self, screen: pygame.Surface):
-        pygame.draw.circle(screen, "red", self.position, self.radius, 2)
+        scaled_asteroid = pygame.transform.scale(Asteroid.__asteroid_image, (self.radius + ASTEROID_MIN_RADIUS * self.__kind, self.radius + ASTEROID_MIN_RADIUS * self.__kind))
+        scaled_asteroid_rect = scaled_asteroid.get_rect()
+        scaled_asteroid_rect.center = self.position
+        screen.blit(scaled_asteroid, scaled_asteroid_rect)
+
+        # this line is used to draw an actual hitbox of the asteroid, will delete later
+        pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):
         self.position += self.velocity * dt

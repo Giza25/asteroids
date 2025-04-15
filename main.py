@@ -22,7 +22,7 @@ def game_loop(
         clock: an in game clock for fps limiting
         delta: an integer working with clock
         player: an object referencing the player
-        font: A font style used for scoring system
+        points_font: A font style used for scoring system
         updatable, drawable, asterouds, shots: pygame Groups that allows us to
             expand the game with more potential objects
     """
@@ -47,7 +47,7 @@ def game_loop(
             and be splitted as they are being shot
             """
         for asteroid in asteroids: 
-            if asteroid.collision_check(player):
+            if asteroid.collision_with_player(player):
                 running = game_over(screen, points_font, points)
                 drawable.empty()
                 asteroids.empty()

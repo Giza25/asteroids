@@ -81,7 +81,7 @@ class Asteroid(CircleShape):
         screen.blit(scaled_asteroid, scaled_asteroid_rect)
 
         # this line is used to draw an actual hitbox of the asteroid, will delete later
-        # pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
+        pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):
         self.position += self.velocity * dt

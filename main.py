@@ -49,14 +49,16 @@ def game_loop(
         and be splitted as they are being shot
         """
         for asteroid in asteroids: 
-            if asteroid.collision_with_player(player):
-                if not shield.shield_is_up:
+            if not shield.shield_is_up:
+                if asteroid.collision_with_player(player):
                     running = game_over(screen, points_font, points)
                     drawable.empty()
                     asteroids.empty()
                     points = 0
                     player = player.reset()
-                else:
+                    shield = Shield(player)
+            else:
+                if asteroid.collision_check(shield):
                     shield.shield_is_up = False
                     asteroid.kill()
             for shot in shots:

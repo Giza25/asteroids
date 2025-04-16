@@ -4,12 +4,14 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from shield import Shield
 
 def game_loop(
         screen: pygame.Surface, 
         clock: pygame.time.Clock, 
         delta: int,
         player: Player,
+        shield: Shield,
         points_font: pygame.font.Font,
         updatable: pygame.sprite.Group,
         drawable: pygame.sprite.Group,
@@ -41,18 +43,22 @@ def game_loop(
         for object in updatable: # update all the objects on the screen
             object.update(delta)
 
-            """
-            Checks asteroids behaviour: 
-            they should collide with the player resulting in a loss 
-            and be splitted as they are being shot
-            """
+        """
+        Checks asteroids behaviour: 
+        they should collide with the player resulting in a loss 
+        and be splitted as they are being shot
+        """
         for asteroid in asteroids: 
             if asteroid.collision_with_player(player):
-                running = game_over(screen, points_font, points)
-                drawable.empty()
-                asteroids.empty()
-                points = 0
-                player = player.reset()
+                if not shield.shield_is_up:
+                    running = game_over(screen, points_font, points)
+                    drawable.empty()
+                    asteroids.empty()
+                    points = 0
+                    player = player.reset()
+                else:
+                    shield.shield_is_up = False
+                    asteroid.kill()
             for shot in shots:
                 if asteroid.collision_check(shot):
                     shot.kill()
@@ -140,17 +146,19 @@ def main():
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
+    Shield.containers = (updatable, drawable)
 
     """
     Creating Asteroid Field and a Player
     """
     AsteroidField() # Calling this class' constructor to create asteroids
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    shield = Shield(player)
 
     """
     Calling game loop where the game happens
     """
-    game_loop(screen, clock, dt, player, font, updatable, drawable, asteroids, shots)
+    game_loop(screen, clock, dt, player, shield, font, updatable, drawable, asteroids, shots)
 
     pygame.quit()
 

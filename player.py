@@ -47,9 +47,9 @@ class Player(CircleShape):
             ready_to_shoot = True
         
         if self.__speed > 0:
-            self.__speed -= PLAYER_MASS
+            self.__speed -= self.__mass
         elif self.__speed < 0:
-            self.__speed += PLAYER_MASS
+            self.__speed += self.__mass
         self.move(dt)
 
         if keys[pygame.K_a]:

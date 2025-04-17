@@ -62,22 +62,24 @@ def game_loop(
                     shield.shield_is_up = False
                     asteroid.kill()
             
-            other_asteroids = [other for other in asteroids if other != asteroid]
+            """
+            This bit checks collision between the asteroids and handles it
+            """
+            other_asteroids = [other for other in asteroids if other != asteroid] # create a copy of `asteroids` group as a list exluding the one checking
             for other_asteroid in other_asteroids:
                 if asteroid.collision_check(other_asteroid):
-                    temp_velocity = asteroid.velocity.copy()
-                    asteroid.velocity.update(other_asteroid.velocity)
-                    other_asteroid.velocity.update(temp_velocity)
+                    # Swap velocities based on mass and momentum conservation
+                    swap_velocity(asteroid, other_asteroid)
 
+                    # Resolve overlap to prevent sticking
                     collision_vector = other_asteroid.position - asteroid.position
                     collision_distance = collision_vector.length()
                     overlap = (asteroid.radius + other_asteroid.radius) - collision_distance
-        
-                    if overlap > 0:
-                        # Normalize the collision vector and move asteroids apart
+
+                    if overlap > 0.01:  # Minimum threshold to resolve overlap
                         collision_vector = collision_vector.normalize()
-                        asteroid.position -= collision_vector * (overlap / 2)
-                        other_asteroid.position += collision_vector * (overlap / 2)
+                        asteroid.position -= collision_vector * (overlap * (other_asteroid.mass / (asteroid.mass + other_asteroid.mass)))
+                        other_asteroid.position += collision_vector * (overlap * (asteroid.mass / (asteroid.mass + other_asteroid.mass)))
         
             """
             Checks if player's shot has hit an asteroid, and if it did,
@@ -143,8 +145,10 @@ def game_over(screen: pygame.Surface, score: pygame.font.Font, points: int):
                 elif event.key == pygame.K_r:
                     return True
 
-def swap_value(a, b):
-    return b, a
+def swap_velocity(asteroid: Asteroid, other_asteroid: Asteroid):
+    temp_velocity = asteroid.velocity.copy() / (other_asteroid.mass / asteroid.mass)
+    asteroid.velocity.update(other_asteroid.velocity / (asteroid.mass / other_asteroid.mass))
+    other_asteroid.velocity.update(temp_velocity)
 
 def main():
     pygame.init()

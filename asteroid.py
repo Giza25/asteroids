@@ -11,6 +11,7 @@ class Asteroid(CircleShape):
     def __init__(self, x, y, radius, kind):
         super().__init__(x, y, radius)
         self.__kind = kind
+        self.mass = pow(self.__kind, 0.7)
         
     def split(self):
         self.kill()
@@ -80,7 +81,7 @@ class Asteroid(CircleShape):
         scaled_asteroid_rect.center = self.position
         screen.blit(scaled_asteroid, scaled_asteroid_rect)
 
-        # this line is used to draw an actual hitbox of the asteroid, will delete later
+        # this line is used to draw an actual hitbox of the asteroid
         pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):

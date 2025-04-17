@@ -55,12 +55,34 @@ def game_loop(
                     drawable.empty()
                     asteroids.empty()
                     points = 0
-                    player = player.reset()
-                    shield = Shield(player)
+                    player = player.reset() # creates a new player after game over screen
+                    shield = Shield(player) # gives new shield to the player
             else:
                 if asteroid.collision_check(shield):
                     shield.shield_is_up = False
                     asteroid.kill()
+            
+            other_asteroids = [other for other in asteroids if other != asteroid]
+            for other_asteroid in other_asteroids:
+                if asteroid.collision_check(other_asteroid):
+                    temp_velocity = asteroid.velocity.copy()
+                    asteroid.velocity.update(other_asteroid.velocity)
+                    other_asteroid.velocity.update(temp_velocity)
+
+                    collision_vector = other_asteroid.position - asteroid.position
+                    collision_distance = collision_vector.length()
+                    overlap = (asteroid.radius + other_asteroid.radius) - collision_distance
+        
+                    if overlap > 0:
+                        # Normalize the collision vector and move asteroids apart
+                        collision_vector = collision_vector.normalize()
+                        asteroid.position -= collision_vector * (overlap / 2)
+                        other_asteroid.position += collision_vector * (overlap / 2)
+        
+            """
+            Checks if player's shot has hit an asteroid, and if it did,
+            destroys both the shot and the asteroid
+            """
             for shot in shots:
                 if asteroid.collision_check(shot):
                     shot.kill()
@@ -121,6 +143,8 @@ def game_over(screen: pygame.Surface, score: pygame.font.Font, points: int):
                 elif event.key == pygame.K_r:
                     return True
 
+def swap_value(a, b):
+    return b, a
 
 def main():
     pygame.init()

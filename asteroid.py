@@ -3,7 +3,8 @@ from math import sqrt
 import random
 from circleshape import CircleShape
 from player import Player
-from constants import ASTEROID_MIN_RADIUS, ASTEROID_KINDS
+from constants import ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS, ASTEROID_KINDS
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Asteroid(CircleShape):
     __asteroid_image = pygame.image.load("resources/Asteroid.png")
@@ -11,6 +12,7 @@ class Asteroid(CircleShape):
     def __init__(self, x, y, radius, kind):
         super().__init__(x, y, radius)
         self.__kind = kind
+        self.mass = pow(self.__kind, 0.7)
         
     def split(self):
         self.kill()
@@ -80,8 +82,16 @@ class Asteroid(CircleShape):
         scaled_asteroid_rect.center = self.position
         screen.blit(scaled_asteroid, scaled_asteroid_rect)
 
-        # this line is used to draw an actual hitbox of the asteroid, will delete later
+        # this line is used to draw an actual hitbox of the asteroid
         pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):
+        if self.position.x + self.radius < -ASTEROID_MAX_RADIUS:
+            self.position.x += SCREEN_WIDTH + self.radius * 2
+        if self.position.x - self.radius > SCREEN_WIDTH + ASTEROID_MAX_RADIUS:
+            self.position.x -= SCREEN_WIDTH + self.radius * 2
+        if self.position.y - self.radius < -ASTEROID_MAX_RADIUS:
+            self.position.y += SCREEN_HEIGHT + self.radius * 2
+        if self.position.y - self.radius > SCREEN_HEIGHT + ASTEROID_MAX_RADIUS:
+            self.position.y -= SCREEN_HEIGHT + self.radius * 2
         self.position += self.velocity * dt

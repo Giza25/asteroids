@@ -3,7 +3,8 @@ from math import sqrt
 import random
 from circleshape import CircleShape
 from player import Player
-from constants import ASTEROID_MIN_RADIUS, ASTEROID_KINDS
+from constants import ASTEROID_MIN_RADIUS, ASTEROID_MAX_RADIUS, ASTEROID_KINDS
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Asteroid(CircleShape):
     __asteroid_image = pygame.image.load("resources/Asteroid.png")
@@ -85,4 +86,12 @@ class Asteroid(CircleShape):
         pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):
+        if self.position.x + self.radius < -ASTEROID_MAX_RADIUS:
+            self.position.x += SCREEN_WIDTH + self.radius * 2
+        if self.position.x - self.radius > SCREEN_WIDTH + ASTEROID_MAX_RADIUS:
+            self.position.x -= SCREEN_WIDTH + self.radius * 2
+        if self.position.y - self.radius < -ASTEROID_MAX_RADIUS:
+            self.position.y += SCREEN_HEIGHT + self.radius * 2
+        if self.position.y - self.radius > SCREEN_HEIGHT + ASTEROID_MAX_RADIUS:
+            self.position.y -= SCREEN_HEIGHT + self.radius * 2
         self.position += self.velocity * dt

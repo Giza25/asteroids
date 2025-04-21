@@ -14,9 +14,18 @@ class Asteroid(CircleShape):
         self.__kind = kind
         self.mass = pow(self.__kind, 0.7)
         
-    def split(self):
+    def split(self, screen: pygame.Surface):
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
+            num_lines = 12
+            length = self.radius / 2
+            for i in range(num_lines):
+                angle = (360 / num_lines) * i
+                start_x = self.position.x + length * pygame.math.Vector2(1, 0).rotate(angle).x
+                start_y = self.position.y + length * pygame.math.Vector2(1, 0).rotate(angle).y
+                end_x = self.position.x + length * pygame.math.Vector2(1, 0).rotate(angle).x * 2
+                end_y = self.position.y + length * pygame.math.Vector2(1, 0).rotate(angle).y * 2
+                pygame.draw.line(screen, "yellow", (start_x, start_y), (end_x, end_y), 2)
             return
         angle = random.uniform(20, 50)
         self.__create_asteroid(angle)
@@ -62,7 +71,7 @@ class Asteroid(CircleShape):
         return min(distance)
 
     def collision_with_player(self, player: Player):
-        distance = self.get_distance_between_triangle_and_point(player.triangle())
+        distance = self.get_distance_between_triangle_and_point(player.triangle(player.position))
         if distance <= self.radius:
             return True
         return False

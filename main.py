@@ -24,6 +24,7 @@ def game_loop(
         clock: an in game clock for fps limiting
         delta: an integer working with clock
         player: an object referencing the player
+        shield: an object referencing player's shield
         points_font: A font style used for scoring system
         updatable, drawable, asterouds, shots: pygame Groups that allows us to
             expand the game with more potential objects

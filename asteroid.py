@@ -13,10 +13,17 @@ class Asteroid(CircleShape):
         super().__init__(x, y, radius)
         self.__kind = kind
         self.mass = pow(self.__kind, 0.7)
-        
+
+
+    """
+    This method handles asteroid splitting as they are being shot
+    """    
     def split(self, screen: pygame.Surface):
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
+            """
+            This handles explosion animation: draws radial lines instead of the asteroid
+            """
             num_lines = 12
             length = self.radius / 2
             for i in range(num_lines):
@@ -92,7 +99,7 @@ class Asteroid(CircleShape):
         screen.blit(scaled_asteroid, scaled_asteroid_rect)
 
         # this line is used to draw an actual hitbox of the asteroid
-        pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
+        # pygame.draw.circle(screen, "purple", self.position, self.radius, 3)
 
     def update(self, dt: int):
         if self.position.x + self.radius < -ASTEROID_MAX_RADIUS:

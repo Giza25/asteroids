@@ -12,6 +12,9 @@ class Player(CircleShape):
         self.__speed = 0
         self.__clock = PLAYER_SHOOT_DELAY
     
+    """
+    Gets coordinates for player triangle 
+    """
     def triangle(self, position):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
@@ -20,6 +23,9 @@ class Player(CircleShape):
         c = position - forward * self.radius + right
         return [a, b, c]
     
+    """
+    Creates a new player object while killing the old one
+    """
     def reset(self):
         self.kill()
         return Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -27,6 +33,9 @@ class Player(CircleShape):
     def rotate(self, dt: int):
         self.rotation += PLAYER_TURN_SPEED * dt
 
+    """
+    Updates speed value with acceleration and speed cap in mind
+    """
     def __update_speed(self, dt: int):
         if abs(self.__speed) <= PLAYER_SPEED_CAP:
             self.__speed += PLAYER_ACCELERATION * dt
@@ -35,6 +44,9 @@ class Player(CircleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * self.__speed * dt
 
+    """
+    Keeps player inside the screen
+    """
     def __handle_out_of_bounds(self):
         if self.position.y <= 0:
             self.position.y = 0
@@ -56,6 +68,9 @@ class Player(CircleShape):
         if self.__clock >= PLAYER_SHOOT_DELAY:
             ready_to_shoot = True
         
+        """
+        INERTIA BABYYYYYYYY
+        """
         if self.__speed > 0:
             self.__speed -= self.__mass
         elif self.__speed < 0:

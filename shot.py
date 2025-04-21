@@ -7,6 +7,9 @@ class Shot(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, SHOT_RADIUS)
 
+    """
+    Destroys shots as they leave the screen boundaries
+    """
     def __handle_out_of_bounds(self):
         if self.position.y <= -self.radius:
             self.kill()
